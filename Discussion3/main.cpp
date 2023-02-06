@@ -15,6 +15,12 @@ struct Tag1{};
 struct Tag2{};
 
 struct PtrObject {
+    PtrObject(int aNum) : value(aNum) {}
+
+    PtrObject(const PtrObject& aCopy) {
+        value = aCopy.value;
+    }
+
 	int value;
 };
 
@@ -55,9 +61,14 @@ void printVector(vector<T> aVec, string aSep=" ", string anEnd="\n") {
 	cout << anEnd;
 }
 
+bool compare(const int& aLeft, const int& aRight) {
+    return aLeft > aRight;
+}
+
 int main() {
 //	PtrObject* ptr = new PtrObject{2};
 //	cout << ptr << endl;
+//	delete ptr;
 
 //	// Function Pointers
 //	bool (*fPtr)(int, bool) = &fun;
@@ -65,50 +76,65 @@ int main() {
 //	// Function Reference
 //	function<bool(int, bool)> theFunction = fun;
 //
+//	// Listeners (event listeners) MouseListener KeyboardListener
+//
 //	callCallable(funPtr);
 
-//	// &, =
+	// &, =
+	// [] - capture clause (pass-by-reference, pass-by-value)
 //	auto lambda = [](const int& aLeft, const int& aRight) {};
 //	IntVector numVector = {2, 4, 1, 12, 12, 34, 1, 2};
 //	printVector(numVector);
-//	std::sort(numVector.begin(), numVector.end());
-//	printVector(numVector);
+//	int aThreshold = 4;
 //
+//	std::sort(numVector.begin(), numVector.end(), [](const int& aLeft, const int& aRight) {
+//	    return aLeft < aRight;
+//    });
+//	printVector(numVector);
+	// O(nlog(N)) - worst scenario
+	// Container is size n
+
 //	vector<Coordinate> coordinates = {Coordinate{1, 1}, Coordinate{5, 2}, Coordinate{2, 0}};
 //	printVector(coordinates);
+//	std::sort(coordinates.begin(), coordinates.end(), [](const Coordinate& aLeft, const Coordinate& aRight) {
+//	    if (aLeft.x > aRight.x) {
+//	        return aLeft.x < aRight.x;
+//	    }
+//	    return aLeft.y < aRight.y;
+//    });
+//    printVector(coordinates);
 
-	return 0;
+    return 0;
 }
+
 /*
  * pointers
- * inside-out technique
  * callables
  * closures vs functor
  * STL basic containers/iterations/calling a function
- * variant, optional
+ * STL algorithms
  *
  * Creational
  * singleton, factory, prototype
  */
 
-//class Singleton {
-//public:
-//	static Singleton* getInstance() {
-//		if (_instance == nullptr) {
-//			_instance = new Singleton();
-//		}
-//		return _instance;
-//	}
-//
-//private:
-//	Singleton() {}
-//	~Singleton() {
-//		delete _instance;
-//	}
-//
-//	static Singleton* _instance;
-//};
-//Singleton* Singleton::_instance = nullptr;
+class Singleton {
+public:
+	static Singleton* getInstance() {
+		if (_instance == nullptr) {
+			_instance = new Singleton();
+		}
+		return _instance;
+	}
+private:
+	Singleton() {}
+	~Singleton() {
+		delete _instance;
+	}
+
+	static Singleton* _instance;
+};
+Singleton* Singleton::_instance = nullptr;
 
 //enum ObjectType {
 //	One, Two
@@ -141,39 +167,39 @@ int main() {
 //	};
 //};
 
-//enum ObjectType {
-//	Type1, Type2
-//};
-//class Object {
-//public:
-//	virtual void print()=0;
-//	virtual Object* prototype()=0;
-//};
-//class Object1 : public Object {
-//	void print() {
-//		cout << "Object 1" << endl;
-//	}
-//	Object* prototype() override {
-//		return new Object1(*this);
-//	}
-//};
-//class Object2 : public Object {
-//	void print() {
-//		cout << "Object 2" << endl;
-//	}
-//	Object* prototype() override {
-//		return new Object2(*this);
-//	}
-//};
-//
-//class Prototype {
-//public:
-//	Object* getObject(ObjectType aType) {
-//		return prototypes[aType]->prototype();
-//	}
-//private:
-//	map<ObjectType, Object*> prototypes = {
-//			{ObjectType::Type1, new Object1()},
-//			{ObjectType::Type2, new Object2()}
-//	};
-//};
+enum ObjectType {
+	Type1, Type2
+};
+class Object {
+public:
+	virtual void print()=0;
+	virtual Object* prototype()=0;
+};
+class Object1 : public Object {
+	void print() {
+		cout << "Object 1" << endl;
+	}
+	Object* prototype() override {
+		return new Object1(*this);
+	}
+};
+class Object2 : public Object {
+	void print() {
+		cout << "Object 2" << endl;
+	}
+	Object* prototype() override {
+		return new Object2(*this);
+	}
+};
+
+class Prototype {
+public:
+	Object* getObject(ObjectType aType) {
+		return prototypes[aType]->prototype();
+	}
+private:
+	map<ObjectType, Object*> prototypes = {
+			{ObjectType::Type1, new Object1()},
+			{ObjectType::Type2, new Object2()}
+	};
+};
