@@ -28,6 +28,18 @@ const string COMMAND_ADD = R"(ADD STORE name="num3" NUMBER name="num1" NUMBER na
 const string COMMAND_SHOW = R"(SHOW name="num3")";
 const string COMMAND_QUIT = R"(QUIT;)";
 
+// Creational Commands
+class Command {
+public:
+    virtual void executeCommand(CommandQuery& aCommandQuery)=0;
+};
+
+class CreateCommand : public Command {
+public:
+    virtual void executeCommand(CommandQuery& aCommandQuery) {}
+};
+// Modification Commands
+
 class CommandProcessor {
 public:
 	CommandProcessor(CommandProcessor* aNext) : next(aNext) {}
@@ -37,22 +49,71 @@ protected:
 	CommandProcessor* next;
 };
 
+// Tokenizer - parse strings/commands (tokens)
+enum CommandTokens  {
+        create, add, show, quit, unknown
+};
+
+Command* createCreateCommand(const string& aCommand) {
+    return new CreateCommand();
+}
+
+CommandTokens getTokenForKey(string aKey) {
+    static map<string, CommandTokens> tokenMap = {
+            {"CREATE", CommandTokens::create},
+    };
+    if (tokenMap.find(aKey) == tokenMap.end()) {
+        return CommandTokens::unknown;
+    }
+    return tokenMap[aKey];
+}
+
+// Factory pattern takes away flexibility from client => give the factory instructions
+// Factory pattern does all the work
+Command* dispatch(CommandTokens aToken, std::string& aCommand) {
+    // Smaller Factory Pattern
+    static map<CommandTokens, CommandFactory> commandMap = {
+            {CommandTokens::create, createCreateCommand},
+    };
+    if (commandMap.find(aToken) == commandMap.end()) {
+        return nullptr;
+    }
+    return commandMap[aToken](aCommand);
+}
+
+/*
+ * Datadase (data)
+ *  Change data
+ *    delete data
+ * UI (screen) shows the data
+ *  move data on screen
+ * Application : single input (terminal)
+ */
+
 int main() {
-	runTemplateExample();
+//	runTemplateExample();
+    stringstream theStream(COMMAND_CREATE_1);
+    string temp;
+    while (theStream >> temp) {
+        cout << temp << "\n";
+    }
 	return 0;
 }
 
 
 /* Agenda:
  * Midterm Discussion
+ * 33% Written Quiz (MC, FRQ, Matching)
+ * 33% Coding Part (Take code assignment 2 make changes || option if your class doesn't work
+ *  {will provide additional class to modify})
+*  34% "Interview" 10-15minutes TA or Prof will code review (Assignment 2 code review)
+ *      Coding style (professionalism)
+ *      Design
  * Parsing Strings as Commands
  * Chain of Responsibility + Factory Pattern
  */
 
-class Command {
-public:
-	virtual void executeCommand(CommandQuery& aCommandQuery)=0;
-};
+
 
 class CommandQuery {
 public:

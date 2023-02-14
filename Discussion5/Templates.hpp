@@ -11,10 +11,23 @@
 using std::string, std::cout;
 
 template<typename T1, typename T2>
-bool lessThan(T1 aLeft, T2 aRight) {
+static bool lessThan(T1 aLeft, T2 aRight) {
 	return aLeft < aRight;
 }
 
+struct Number {
+    float num;
+
+//    bool operator<(const float& aFloat) {
+//        return this->num < aFloat;
+//    }
+};
+
+// HINT :partial template specialization mocks if conditions for types
+template<>
+static bool lessThan(Number aLeft, Number aRight) {
+    return aLeft.num < aRight.num;
+}
 
 struct Coordinate {
 	int x;
@@ -31,8 +44,20 @@ void printResult(bool aResult) {
 }
 
 void runTemplateExample() {
-	printResult(lessThan(Coordinate{1, 2}, new Coordinate{1, 4}));
+	printResult(lessThan(Number{1.0f}, Number{2.0f}));
 }
+
+//template <typename T>
+//class SomeClass {
+//public:
+//    bool fun(T aT) {
+//        return aT.size();
+//    }
+//    template<>
+//    bool fun(int aT) {
+//        return aT;
+//    }
+//};
 
 
 #endif //DISCUSSION5_TEMPLATES_HPP
