@@ -5,6 +5,30 @@ int main() {
 	return 0;
 }
 
+template<typename T>
+bool func(T aArg) {
+    return false;
+}
+
+template<typename T>
+bool func(T* aArg) {
+    return true;
+}
+
+class Block{};
+class Storage{};
+class Chunker{};
+class Archive {
+    // Storing files in an archive
+        /* Block (overarching file - object as data)
+         * Storing blocks - storage
+         * Chunking blocks - Chunker
+         */
+    // has-a
+    Storage singleon_;
+    Chunker staticclass;
+};
+
 /*
  * OOP + STL
  * 		Encapsulation
@@ -16,9 +40,9 @@ General Polymorphism
  		Operator Overloading
  	Runtime
  		Virtual Function (Overriding)
-	What type is template?
+	What type is template? - compile time
 Solid Principles
- 	SRP
+ 	SRP (Divide and Conquer)
  	Open-closed (interface)
  	Liskov
  	Interface Segregation
